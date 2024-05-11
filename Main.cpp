@@ -164,15 +164,7 @@ public:
 	GameState(StateMachine* machine) : State(machine) {}
 
 	void Enter() override {}
-	void Update() override {
-		ball.Update();
-		paddle.Update();
-		bricks.Intersects(ball);
-		paddle.Intersects(ball);
-		ball.Draw();
-		bricks.Draw();
-		paddle.Draw();
-	}
+	void Update();
 	void Exit() override {}
 };
 
@@ -185,6 +177,20 @@ void TitleState::Update() {
 	if (KeyEnter.down()) {
 		stateMachine->ChangeState(new GameState(stateMachine));
 	}
+}
+
+void GameState::Update() {
+	if (KeyEnter.down()) {
+		stateMachine->ChangeState(new TitleState(stateMachine));
+	}
+
+	ball.Update();
+	paddle.Update();
+	bricks.Intersects(ball);
+	paddle.Intersects(ball);
+	ball.Draw();
+	bricks.Draw();
+	paddle.Draw();
 }
 
 void Main()
