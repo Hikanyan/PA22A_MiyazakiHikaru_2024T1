@@ -253,17 +253,6 @@ public:
 	}
 };
 
-class ResultState : public State
-{
-public:
-	ResultState(StateMachine* machine) : State(machine)
-	{
-	}
-
-	void Enter() override { Print << U"ResultState Enter"; }
-	void Update() override;
-	void Exit() override { Print << U"ResultState Exit"; }
-};
 
 StateMachine::StateMachine() : currentState(new TitleState(this))
 {
@@ -303,9 +292,9 @@ void GameState::Update()
 	{
 		stateMachine->ChangeState(new TitleState(stateMachine));
 	}
-	if (player.isAlive == false)
+	if(player.isAlive == false)
 	{
-		stateMachine->ChangeState(new ResultState(stateMachine));
+		stateMachine->ChangeState(new TitleState(stateMachine));
 	}
 
 	player.Update();
@@ -317,15 +306,7 @@ void GameState::Update()
 	bricks.Draw();
 	paddle.Draw();
 }
-
-void ResultState::Update()
-{
-	if (KeyEnter.down())
-	{
-		stateMachine->ChangeState(new TitleState(stateMachine));
-	}
-}
-
+void 
 void Main()
 {
 	StateMachine sm;
