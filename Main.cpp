@@ -1,7 +1,6 @@
 ﻿#include <Siv3D.hpp>
 
 class StateMachine;
-//class TitleState;
 class GameState;
 
 namespace constants
@@ -14,8 +13,8 @@ namespace constants
 	namespace bricks
 	{
 		constexpr Size BRICK_SIZE{40, 20};
-		constexpr int Y_COUNT = 5;
-		constexpr int X_COUNT = 20;
+		constexpr int Y_COUNT = 2;
+		constexpr int X_COUNT = 5;
 		constexpr int MAX = Y_COUNT * X_COUNT;
 	}
 
@@ -93,6 +92,7 @@ public:
 	int life;
 	int score;
 	bool isAlive;
+	Font font{20};
 
 	Player() : life(constants::player::MAX_LIFE), score(0), isAlive(true)
 	{
@@ -112,8 +112,8 @@ public:
 
 	void Update() const
 	{
-		Print << U"Life: " << life;
-		Print << U"Score: " << score;
+		font(U"Life: ", life).draw(10, 10);
+		font(U"Score: ", score).draw(10, 30);
 	}
 };
 
@@ -140,7 +140,9 @@ class Bricks
 public:
 	Rect bricksModel[constants::bricks::MAX];
 
-	Bricks()
+	Player* player;
+
+	Bricks() : player(nullptr)
 	{
 		using namespace constants::bricks;
 		for (int y = 0; y < Y_COUNT; ++y)
@@ -165,12 +167,13 @@ public:
 		}
 	}
 
+	// ブロックとボールの衝突判定
 	void Intersects(Ball& ball)
 	{
 		for (int i = 0; i < constants::bricks::MAX; ++i)
 		{
 			Rect& refBrick = bricksModel[i];
-			if (refBrick.intersects(ball.model))
+			if (refBrick.intersects(ball.model)) // ブロックとボールが衝突したら
 			{
 				if (refBrick.bottom().intersects(ball.model) || refBrick.top().intersects(ball.model))
 				{
@@ -180,10 +183,27 @@ public:
 				{
 					ball.velocity.x *= -1;
 				}
+				//Scoreを加算
+				if (player)
+				{
+					player->score += 10;
+				}
 				refBrick.y -= 600;
 				break;
 			}
 		}
+	}
+
+	bool AllBricksDestroyed() const
+	{
+		for (int i = 0; i < constants::bricks::MAX; ++i)
+		{
+			if (bricksModel[i].y >= 0)
+			{
+				return false;
+			}
+		}
+		return true;
 	}
 };
 
@@ -192,13 +212,14 @@ class Paddle
 public:
 	Rect model;
 
-	Paddle() : model(Arg::center(Cursor::Pos().x, 500), constants::paddle::SIZE)
+	Paddle()
 	{
+		Update();
 	}
 
 	void Update()
 	{
-		model.x = Cursor::Pos().x - (constants::paddle::SIZE.x / 2);
+		model = Rect{Arg::center(Cursor::Pos().x, 500), constants::paddle::SIZE};
 	}
 
 	void Intersects(Ball& ball)
@@ -214,7 +235,7 @@ public:
 
 	void Draw() const
 	{
-		model.rounded(3).draw();
+		model.rounded(3).draw(HSV{ 55 });
 	}
 };
 
@@ -225,9 +246,11 @@ public:
 	{
 	}
 
-	void Enter() override { Print << U"TitleState Enter"; }
-	void Update();
-	void Exit() override { Print << U"TitleState Exit"; }
+	Font font{50};
+
+	void Enter() override;
+	void Update() override;
+	void Exit() override;
 };
 
 class GameState : public State
@@ -237,16 +260,20 @@ public:
 	Ball ball;
 	Bricks bricks;
 	Paddle paddle;
+	bool isGameClear;
 
-	GameState(StateMachine* machine) : State(machine)
+	GameState(StateMachine* machine) : State(machine), isGameClear(false)
 	{
+		bricks.player = &player;
 	}
+
+	void GameClearCheck();
 
 	void Enter() override
 	{
 	}
 
-	void Update();
+	void Update() override;
 
 	void Exit() override
 	{
@@ -256,13 +283,23 @@ public:
 class ResultState : public State
 {
 public:
-	ResultState(StateMachine* machine) : State(machine)
+	int finalScore;
+	int remainingLives;
+	bool isGameClear;
+	Font font = Font(40);
+
+	ResultState(StateMachine* machine, int score, int lives, bool clear) :
+		State(machine), finalScore(score), remainingLives(lives), isGameClear(clear)
 	{
 	}
 
-	void Enter() override { Print << U"ResultState Enter"; }
+	void Enter() override
+	{
+	}
+
 	void Update() override;
-	void Exit() override { Print << U"ResultState Exit"; }
+
+	void Exit() override;
 };
 
 StateMachine::StateMachine() : currentState(new TitleState(this))
@@ -289,11 +326,30 @@ void Ball::Update(Player& player)
 	}
 }
 
+void TitleState::Enter()
+{
+}
+
 void TitleState::Update()
 {
 	if (KeyEnter.down())
 	{
 		stateMachine->ChangeState(new GameState(stateMachine));
+		return;
+	}
+	font(U"Press Enter to start").drawAt(Scene::Center(), Palette::Blue);
+}
+
+void TitleState::Exit()
+{
+}
+
+void GameState::GameClearCheck()
+{
+	if (bricks.AllBricksDestroyed())
+	{
+		isGameClear = true;
+		stateMachine->ChangeState(new ResultState(stateMachine, player.score, player.life, isGameClear));
 	}
 }
 
@@ -302,10 +358,12 @@ void GameState::Update()
 	if (KeyEnter.down())
 	{
 		stateMachine->ChangeState(new TitleState(stateMachine));
+		return;
 	}
 	if (player.isAlive == false)
 	{
-		stateMachine->ChangeState(new ResultState(stateMachine));
+		stateMachine->ChangeState(new ResultState(stateMachine, player.score, player.life, isGameClear));
+		return;
 	}
 
 	player.Update();
@@ -316,6 +374,7 @@ void GameState::Update()
 	ball.Draw();
 	bricks.Draw();
 	paddle.Draw();
+	GameClearCheck();
 }
 
 void ResultState::Update()
@@ -323,7 +382,24 @@ void ResultState::Update()
 	if (KeyEnter.down())
 	{
 		stateMachine->ChangeState(new TitleState(stateMachine));
+		return;
 	}
+	// Draw result
+	if (!isGameClear)
+	{
+		font(U"Game Over").drawAt(Scene::Center(), Palette::Red);
+	}
+	else
+	{
+		font(U"Clear!").drawAt(Scene::Center(), Palette::Green);
+		font(U"Remaining Lives: ", remainingLives).drawAt(Scene::Center().movedBy(0, 120), Palette::White);
+	}
+	font(U"Final Score: ", finalScore).drawAt(Scene::Center().movedBy(0, 60), Palette::White);
+	font(U"Press Enter to restart").drawAt(Scene::Center().movedBy(0, 180));
+}
+
+void ResultState::Exit()
+{
 }
 
 void Main()
