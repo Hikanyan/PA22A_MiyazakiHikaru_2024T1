@@ -1,0 +1,17 @@
+#pragma once
+#include "StateMachine.h"
+
+class State
+{
+protected:
+	StateMachine* stateMachine;
+
+public:
+	State(StateMachine* machine) : stateMachine(machine)
+	{
+	}
+
+	virtual void Enter() = 0;
+	virtual void Update() = 0;
+	virtual void Exit() = 0;
+};

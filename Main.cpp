@@ -31,60 +31,60 @@ namespace constants
 }
 
 
-class State
-{
-protected:
-	StateMachine* stateMachine;
+// class State
+// {
+// protected:
+// 	StateMachine* stateMachine;
+//
+// public:
+// 	State(StateMachine* machine) : stateMachine(machine)
+// 	{
+// 	}
+//
+// 	virtual void Enter() = 0;
+// 	virtual void Update() = 0;
+// 	virtual void Exit() = 0;
+// };
 
-public:
-	State(StateMachine* machine) : stateMachine(machine)
-	{
-	}
-
-	virtual void Enter() = 0;
-	virtual void Update() = 0;
-	virtual void Exit() = 0;
-};
-
-class StateMachine
-{
-private:
-	State* currentState;
-
-public:
-	StateMachine();
-
-	~StateMachine()
-	{
-		if (currentState)
-		{
-			currentState->Exit();
-			delete currentState;
-		}
-	}
-
-	void ChangeState(State* newState)
-	{
-		if (currentState)
-		{
-			currentState->Exit();
-			delete currentState;
-		}
-		currentState = newState;
-		if (currentState)
-		{
-			currentState->Enter();
-		}
-	}
-
-	void Update()
-	{
-		if (currentState)
-		{
-			currentState->Update();
-		}
-	}
-};
+// class StateMachine
+// {
+// private:
+// 	State* currentState;
+//
+// public:
+// 	StateMachine();
+//
+// 	~StateMachine()
+// 	{
+// 		if (currentState)
+// 		{
+// 			currentState->Exit();
+// 			delete currentState;
+// 		}
+// 	}
+//
+// 	void ChangeState(State* newState)
+// 	{
+// 		if (currentState)
+// 		{
+// 			currentState->Exit();
+// 			delete currentState;
+// 		}
+// 		currentState = newState;
+// 		if (currentState)
+// 		{
+// 			currentState->Enter();
+// 		}
+// 	}
+//
+// 	void Update()
+// 	{
+// 		if (currentState)
+// 		{
+// 			currentState->Update();
+// 		}
+// 	}
+// };
 
 class Player
 {
