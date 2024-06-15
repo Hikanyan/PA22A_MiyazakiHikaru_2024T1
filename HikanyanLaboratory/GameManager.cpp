@@ -8,7 +8,6 @@ void GameManager::Initialize()
 
 void GameManager::Update()
 {
-	font(U"Test").draw(10, 10);
 	sm.Update();
 }
 
