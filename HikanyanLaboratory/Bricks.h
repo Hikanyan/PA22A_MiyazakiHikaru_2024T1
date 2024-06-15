@@ -6,8 +6,8 @@ class Bricks
 {
 public:
 	Size BRICK_SIZE{40, 20};
-	static const int Y_COUNT = 2;
-	static const int X_COUNT = 5;
+	static const int Y_COUNT = 10;
+	static const int X_COUNT = 20;
 	static const int MAX = Y_COUNT * X_COUNT;
 
 	Rect bricksModel[MAX];
