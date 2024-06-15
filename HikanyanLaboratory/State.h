@@ -1,5 +1,6 @@
 #pragma once
-#include "StateMachine.h"
+
+class StateMachine;
 
 class State
 {
@@ -7,6 +8,8 @@ protected:
 	StateMachine* stateMachine;
 
 public:
+	virtual ~State() = default;
+
 	State(StateMachine* machine) : stateMachine(machine)
 	{
 	}
