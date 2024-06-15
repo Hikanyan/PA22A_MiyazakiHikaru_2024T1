@@ -271,7 +271,7 @@ classDiagram
 
 1. このリポジトリをクローンします。
     ```sh
-    git clone https://github.com/yourusername/your-repo-name.git
+    git clone https://github.com/Hikanyan/PA22A_MiyazakiHikaru_2024T1.git
     ```
 
 2. プロジェクトをビルドします。
