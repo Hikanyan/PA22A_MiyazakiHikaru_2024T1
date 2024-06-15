@@ -6,14 +6,15 @@
 ゲームは、状態管理(State Machine)とシングルトンパターンを使用して設計されています。
 
 ## クラス設計
+# Breakout Game Class Diagram
 
 ```mermaid
 classDiagram
     class State {
         +StateMachine* stateMachine
-        +void Enter()*
-        +void Update()*
-        +void Exit()*
+        +void Enter()
+        +void Update()
+        +void Exit()
     }
 
     class StateMachine {
@@ -26,26 +27,26 @@ classDiagram
 
     class GameManager {
         +StateMachine sm
-        +Font font{20}
+        +Font font
         +void Initialize()
         +void Update()
         +void Finalize()
     }
 
     class Player {
-        +int MAX_LIFE = 3
-        +int MAX_SCORE = 0
+        +int MAX_LIFE
+        +int MAX_SCORE
         +int life
         +int score
         +bool isAlive
-        +Font font{20}
+        +Font font
         +Player()
         +void DecreaseLife()
         +void Update() const
     }
 
     class Ball {
-        +double BALL_SPEED = 480.0
+        +double BALL_SPEED
         +Vec2 velocity
         +Circle model
         +Ball()
@@ -54,7 +55,7 @@ classDiagram
     }
 
     class Paddle {
-        +Size size{60, 10}
+        +Size size
         +Rect model
         +Paddle()
         +void Update()
@@ -63,11 +64,11 @@ classDiagram
     }
 
     class Bricks {
-        +Size BRICK_SIZE{40, 20}
-        +static const int Y_COUNT = 2
-        +static const int X_COUNT = 5
-        +static const int MAX = Y_COUNT * X_COUNT
-        +Rect bricksModel[MAX]
+        +Size BRICK_SIZE
+        +static int Y_COUNT
+        +static int X_COUNT
+        +static int MAX
+        +Rect bricksModel
         +Player* player
         +Bricks()
         +void Draw()
@@ -83,20 +84,20 @@ classDiagram
         +bool isGameClear
         +GameState(StateMachine* machine)
         +void GameClearCheck()
-        +void Enter() override
-        +void Update() override
-        +void Exit() override
+        +void Enter()
+        +void Update()
+        +void Exit()
     }
 
     class ResultState {
         +int finalScore
         +int remainingLives
         +bool isGameClear
-        +Font font = Font(40)
+        +Font font
         +ResultState(StateMachine* machine, int score, int lives, bool clear)
-        +void Enter() override
-        +void Update() override
-        +void Exit() override
+        +void Enter()
+        +void Update()
+        +void Exit()
     }
 
     StateMachine --> State
@@ -110,7 +111,7 @@ classDiagram
     Bricks --> Player
     Ball --> Player
     Paddle --> Ball
-
+```
 
 
 ### State
