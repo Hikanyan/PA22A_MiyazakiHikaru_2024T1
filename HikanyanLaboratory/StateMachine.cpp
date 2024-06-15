@@ -1,8 +1,11 @@
 //#include "stdafx.h"
 #include "StateMachine.h"
 
-StateMachine::StateMachine()
+#include "TitleState.h"
+
+StateMachine::StateMachine() : currentState(new TitleState(this))
 {
+	currentState->Enter();
 }
 
 StateMachine::~StateMachine()
