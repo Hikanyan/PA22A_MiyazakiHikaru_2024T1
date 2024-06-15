@@ -1,2 +1,1 @@
-﻿#include "stdafx.h"
-#include "Paddle.h"
+﻿#include "Paddle.h"

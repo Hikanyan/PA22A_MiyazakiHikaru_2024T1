@@ -1,5 +1,7 @@
 ﻿#pragma once
 
+class Player;
+
 class Ball
 {
 public:
@@ -8,7 +10,7 @@ public:
 	Vec2 velocity;
 	Circle model;
 
-	Ball() : velocity(0, -constants::ball::BALL_SPEED), model{400, 400, 10}
+	Ball() : velocity(0, -BALL_SPEED), model{400, 400, 10}
 	{
 	}
 

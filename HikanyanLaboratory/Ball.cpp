@@ -1,6 +1,5 @@
 ﻿#include "Ball.h"
-
-
+#include "Player.h"
 void Ball::Update(Player& player)
 {
 	model.moveBy(velocity * Scene::DeltaTime());
@@ -15,7 +14,7 @@ void Ball::Update(Player& player)
 	if (model.y > 600)
 	{
 		model.setPos(400, 400);
-		velocity = Vec2(0, -constants::ball::BALL_SPEED);
+		velocity = Vec2(0, -BALL_SPEED);
 		player.DecreaseLife();
 	}
 }

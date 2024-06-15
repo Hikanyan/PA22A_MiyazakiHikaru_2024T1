@@ -1,5 +1,6 @@
 ﻿#include "GameState.h"
 
+#include "ResultState.h"
 #include "TitleState.h"
 
 void GameState::GameClearCheck()

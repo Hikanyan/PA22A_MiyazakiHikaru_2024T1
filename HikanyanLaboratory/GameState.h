@@ -1,4 +1,8 @@
 ﻿#pragma once
+#include "Ball.h"
+#include "Bricks.h"
+#include "Paddle.h"
+#include "Player.h"
 #include "State.h"
 
 class GameState : public State

@@ -1,2 +1,1 @@
-﻿#include "stdafx.h"
-#include "Bricks.h"
+﻿#include "Bricks.h"

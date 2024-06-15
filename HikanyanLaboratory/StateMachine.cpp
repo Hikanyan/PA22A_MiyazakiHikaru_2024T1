@@ -28,3 +28,7 @@ void StateMachine::Update()
 		currentState->Update();
 	}
 }
+
+void StateMachine::Initialize()
+{
+}
