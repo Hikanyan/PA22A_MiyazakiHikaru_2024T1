@@ -1,5 +1,6 @@
 ﻿#include "Ball.h"
 #include "Player.h"
+
 void Ball::Update(Player& player)
 {
 	model.moveBy(velocity * Scene::DeltaTime());
